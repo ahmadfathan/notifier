@@ -43,6 +43,10 @@ def create_response(code, is_success, message, data=None):
 
     return jsonify(resp), code
 
+@app.route("/", methods=['GET'])
+def root():
+    return create_response(HTTPStatus.OK, True, "It's working!!")
+
 @app.route("/play", methods=['GET'])
 def play():
     url = request.args.get('url')
