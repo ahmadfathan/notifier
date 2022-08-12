@@ -10,7 +10,7 @@ CORS(app)
 import confuse
 
 config = confuse.Configuration('App', __name__, read=False)
-config_path = path.join(path.dirname(__file__), 'config.yaml')
+config_path = path.join(path.dirname(path.dirname(__file__)), 'config.yaml')
 
 config.set_file(config_path, base_for_paths=True)
 
