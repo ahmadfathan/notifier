@@ -56,5 +56,3 @@ def stop():
     client.publish("test/stop", " ")
     return create_response(HTTPStatus.OK, True, "OK")
 
-app.run(host='0.0.0.0', port=5000, debug=True)
-
