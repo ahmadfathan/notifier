@@ -31,11 +31,12 @@ def create_response(code, is_success, message, data=None):
 
     return jsonify(resp), code
 
-def mqtt_publish(payload):
-    publish.single( "test/stream", 
-                payload=payload, 
-                qos=2, 
-                hostname=MQTT_SERVER, port=MQTT_PORT
+def mqtt_publish(topic, payload):
+    publish.single( 
+        topic, 
+        payload=payload, 
+        qos=2, 
+        hostname=MQTT_SERVER, port=MQTT_PORT
     )
 
 @app.route("/", methods=['GET'])
