@@ -56,7 +56,7 @@ def play():
     return create_response(HTTPStatus.OK, True, "OK")
 
 @app.route("/stream", methods=['GET'])
-def play():
+def stream():
     url = request.args.get('url')
     topic = request.args.get('topic')
 
