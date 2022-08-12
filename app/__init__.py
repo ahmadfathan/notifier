@@ -52,6 +52,9 @@ def play():
     url = request.args.get('url')
     topic = request.args.get('topic')
 
+    if not client.is_connected:
+        client.connect(MQTT_SERVER, port=MQTT_PORT)
+        
     client.publish(f"{topic}/play", url)
     return create_response(HTTPStatus.OK, True, "OK")
 
@@ -59,6 +62,9 @@ def play():
 def stream():
     url = request.args.get('url')
     topic = request.args.get('topic')
+
+    if not client.is_connected:
+        client.connect(MQTT_SERVER, port=MQTT_PORT)
 
     client.publish(f"{topic}/stream", url)
     return create_response(HTTPStatus.OK, True, "OK")
