@@ -55,6 +55,14 @@ def play():
     client.publish(f"{topic}/play", url)
     return create_response(HTTPStatus.OK, True, "OK")
 
+@app.route("/stream", methods=['GET'])
+def play():
+    url = request.args.get('url')
+    topic = request.args.get('topic')
+
+    client.publish(f"{topic}/stream", url)
+    return create_response(HTTPStatus.OK, True, "OK")
+
 @app.route("/stop", methods=['GET'])
 def stop():
     client.publish("test/stop", " ")
