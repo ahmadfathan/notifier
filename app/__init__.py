@@ -2,7 +2,7 @@ from http import HTTPStatus
 from os import path
 from flask import Flask, jsonify, request
 from flask_cors import CORS
-import paho.mqtt.client as mqttClient
+import paho.mqtt.publish as publish
 
 app = Flask(__name__)
 CORS(app)
@@ -21,18 +21,6 @@ MQTT_PASSWORD = config['MQTT_PASSWORD'].get()
 
 RTTTL = config['RTTTL'].get()
 
-def on_connect(client, userdata, flags, rc):
-    print("Connected to MQTT broker")
-
-client = mqttClient.Client("haus")
-client.username_pw_set(MQTT_USER, password=MQTT_PASSWORD)
-
-client.on_connect= on_connect
-
-client.connect(MQTT_SERVER, port=MQTT_PORT)
-
-client.loop_start()
-
 def create_response(code, is_success, message, data=None):
     resp = {
         'is_success': is_success,
@@ -43,6 +31,13 @@ def create_response(code, is_success, message, data=None):
 
     return jsonify(resp), code
 
+def mqtt_publish(payload):
+    publish.single( "test/stream", 
+                payload=payload, 
+                qos=2, 
+                hostname=MQTT_SERVER, port=MQTT_PORT
+    )
+
 @app.route("/", methods=['GET'])
 def root():
     return create_response(HTTPStatus.OK, True, "It's working!!")
@@ -51,27 +46,21 @@ def root():
 def play():
     url = request.args.get('url')
     topic = request.args.get('topic')
-
-    client.loop()   
         
-    client.publish(f"{topic}/play", url)
+    mqtt_publish(f"{topic}/play", url)
     return create_response(HTTPStatus.OK, True, "OK")
 
 @app.route("/stream", methods=['GET'])
 def stream():
     url = request.args.get('url')
     topic = request.args.get('topic')
-
-    client.loop()
     
-    client.publish(f"{topic}/stream", url)
+    mqtt_publish(f"{topic}/stream", url)
     return create_response(HTTPStatus.OK, True, "OK")
 
 @app.route("/stop", methods=['GET'])
 def stop():
 
-    client.loop()
-    
-    client.publish("test/stop", " ")
+    mqtt_publish("test/stop", " ")
     return create_response(HTTPStatus.OK, True, "OK")
 
