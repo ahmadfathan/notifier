@@ -59,6 +59,14 @@ def stream():
     mqtt_publish(f"{topic}/stream", url)
     return create_response(HTTPStatus.OK, True, "OK")
 
+@app.route("/volume", methods=['GET'])
+def stream():
+    topic = request.args.get('topic')
+    volume = request.args.get('volume')
+
+    mqtt_publish(f"{topic}/volume", volume)
+    return create_response(HTTPStatus.OK, True, "OK")
+
 @app.route("/stop", methods=['GET'])
 def stop():
 
