@@ -68,6 +68,8 @@ def authenticate(func):
             
         return func(*args, **kwargs)
     
+    wrapper.__name__ = func.__name__
+    
     return wrapper
 
 @app.route("/", methods=['GET'])
@@ -98,6 +100,7 @@ def play():
     return create_response(HTTPStatus.OK, True, "OK")
 
 @app.route("/stream", methods=['POST'])
+@authenticate
 def stream():
     url = request.form['url']
     topic = request.form['topic']
@@ -121,6 +124,7 @@ def volume():
     return create_response(HTTPStatus.OK, True, "OK")
 
 @app.route("/stop", methods=['POST'])
+@authenticate
 def stop():
 
     mqtt_publish("test/stop", " ")
