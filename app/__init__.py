@@ -51,7 +51,7 @@ def mqtt_publish(topic, payload):
 def root():
     return create_response(HTTPStatus.OK, True, "It's working!!")
 
-@app.route("/auth/generate_key", methods=['POST'])
+@app.route("/auth/signin", methods=['POST'])
 def generate_key():
     user = request.form['user']
 
@@ -60,7 +60,7 @@ def generate_key():
 
     token = auth.encode_auth_token(user)
 
-    return create_response(HTTPStatus.OK, True, "OK", data={'api_key': token})
+    return create_response(HTTPStatus.OK, True, "OK", data={'token': token})
 
 @app.route("/play", methods=['POST'])
 def play():
