@@ -34,7 +34,7 @@ def create_response(code, is_success, message, data=None):
         'message': message
     }
 
-    if data is not None: resp['data'] = data
+    if data is not None: resp['results'] = {'data': data}
 
     return jsonify(resp), code
 
