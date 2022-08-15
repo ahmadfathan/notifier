@@ -60,7 +60,7 @@ def stream():
     return create_response(HTTPStatus.OK, True, "OK")
 
 @app.route("/volume", methods=['GET'])
-def stream():
+def volume():
     topic = request.args.get('topic')
     volume = request.args.get('volume')
 
