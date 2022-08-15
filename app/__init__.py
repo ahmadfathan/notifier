@@ -43,31 +43,40 @@ def mqtt_publish(topic, payload):
 def root():
     return create_response(HTTPStatus.OK, True, "It's working!!")
 
-@app.route("/play", methods=['GET'])
+@app.route("/play", methods=['POST'])
 def play():
-    url = request.args.get('url')
-    topic = request.args.get('topic')
+    url = request.form['url']
+    topic = request.form['topic']
         
+    if not url or not topic:
+        return create_response(HTTPStatus.BAD_REQUEST, True, "Bad Parameter")
+
     mqtt_publish(f"{topic}/play", url)
     return create_response(HTTPStatus.OK, True, "OK")
 
-@app.route("/stream", methods=['GET'])
+@app.route("/stream", methods=['POST'])
 def stream():
-    url = request.args.get('url')
-    topic = request.args.get('topic')
+    url = request.form['url']
+    topic = request.form['topic']
     
+    if not url or not topic:
+        return create_response(HTTPStatus.BAD_REQUEST, True, "Bad Parameter")
+
     mqtt_publish(f"{topic}/stream", url)
     return create_response(HTTPStatus.OK, True, "OK")
 
-@app.route("/volume", methods=['GET'])
+@app.route("/volume", methods=['POST'])
 def volume():
-    topic = request.args.get('topic')
-    volume = request.args.get('volume')
+    topic = request.form['topic']
+    volume = request.form['volume']
+
+    if not volume or not topic:
+        return create_response(HTTPStatus.BAD_REQUEST, True, "Bad Parameter")
 
     mqtt_publish(f"{topic}/volume", volume)
     return create_response(HTTPStatus.OK, True, "OK")
 
-@app.route("/stop", methods=['GET'])
+@app.route("/stop", methods=['POST'])
 def stop():
 
     mqtt_publish("test/stop", " ")
