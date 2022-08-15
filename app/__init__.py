@@ -47,6 +47,31 @@ def mqtt_publish(topic, payload):
         hostname=MQTT_SERVER, port=MQTT_PORT
     )
 
+def authenticate(func):
+    def wrapper(*args, **kwargs):
+        resp = func(*args, **kwargs)
+
+        token = request.headers['Access-Token']
+        
+        if not token:
+            resp = create_response(HTTPStatus.BAD_REQUEST, False, "Bad parameter")
+
+        if not len(token.split(' ')) == 2:
+            resp = create_response(HTTPStatus.BAD_REQUEST, False, "Authentication failed")
+
+        ret, result = auth.decode_auth_token(token.split(' ')[1])
+
+        if not ret: resp = create_response(HTTPStatus.BAD_REQUEST, False, result)
+
+        user = result
+
+        if not user in WHITELISTED_USERS:
+            resp = create_response(HTTPStatus.BAD_REQUEST, False, "User not allowed")
+            
+        return resp
+    
+    return wrapper
+
 @app.route("/", methods=['GET'])
 def root():
     return create_response(HTTPStatus.OK, True, "It's working!!")
@@ -63,6 +88,7 @@ def generate_key():
     return create_response(HTTPStatus.OK, True, "OK", data={'token': token})
 
 @app.route("/play", methods=['POST'])
+@authenticate
 def play():
     url = request.form['url']
     topic = request.form['topic']
@@ -74,31 +100,19 @@ def play():
     return create_response(HTTPStatus.OK, True, "OK")
 
 @app.route("/stream", methods=['POST'])
+@authenticate
 def stream():
-    token = request.headers['Access-Token']
     url = request.form['url']
     topic = request.form['topic']
     
-    if not url or not topic or not token:
+    if not url or not topic:
         return create_response(HTTPStatus.BAD_REQUEST, False, "Bad parameter")
-
-    if not len(token.split(' ')) == 2:
-        return create_response(HTTPStatus.BAD_REQUEST, False, "Authentication failed")
-
-    ret, result = auth.decode_auth_token(token.split(' ')[1])
-
-    if not ret: 
-        return create_response(HTTPStatus.BAD_REQUEST, False, result)
-
-    user = result
-
-    if not user in WHITELISTED_USERS:
-        return create_response(HTTPStatus.BAD_REQUEST, False, "User not allowed")
 
     mqtt_publish(f"{topic}/stream", url)
     return create_response(HTTPStatus.OK, True, "OK")
 
 @app.route("/volume", methods=['POST'])
+@authenticate
 def volume():
     topic = request.form['topic']
     volume = request.form['volume']
@@ -110,6 +124,7 @@ def volume():
     return create_response(HTTPStatus.OK, True, "OK")
 
 @app.route("/stop", methods=['POST'])
+@authenticate
 def stop():
 
     mqtt_publish("test/stop", " ")
