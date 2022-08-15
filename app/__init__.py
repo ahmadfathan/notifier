@@ -98,6 +98,7 @@ def play():
     return create_response(HTTPStatus.OK, True, "OK")
 
 @app.route("/stream", methods=['POST'])
+@authenticate
 def stream():
     url = request.form['url']
     topic = request.form['topic']
