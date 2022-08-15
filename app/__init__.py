@@ -79,7 +79,7 @@ def stream():
 
     a = []
 
-    for key in headers.keys: a.append(headers.get(key))
+    for key in headers.keys(): a.append(headers.get(key))
 
     return jsonify(a)
 
