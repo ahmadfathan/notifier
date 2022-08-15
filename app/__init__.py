@@ -56,7 +56,7 @@ def generate_key():
     user = request.form['user']
 
     if not user:
-        return create_response(HTTPStatus.BAD_REQUEST, True, "Bad parameter")
+        return create_response(HTTPStatus.BAD_REQUEST, False, "Bad parameter")
 
     token = auth.encode_auth_token(user)
 
@@ -68,7 +68,7 @@ def play():
     topic = request.form['topic']
         
     if not url or not topic:
-        return create_response(HTTPStatus.BAD_REQUEST, True, "Bad parameter")
+        return create_response(HTTPStatus.BAD_REQUEST, False, "Bad parameter")
 
     mqtt_publish(f"{topic}/play", url)
     return create_response(HTTPStatus.OK, True, "OK")
@@ -80,20 +80,20 @@ def stream():
     topic = request.form['topic']
     
     if not url or not topic or not token:
-        return create_response(HTTPStatus.BAD_REQUEST, True, "Bad parameter")
+        return create_response(HTTPStatus.BAD_REQUEST, False, "Bad parameter")
 
     if not len(token.split(' ')) == 2:
-        return create_response(HTTPStatus.BAD_REQUEST, True, "Authentication failed")
+        return create_response(HTTPStatus.BAD_REQUEST, False, "Authentication failed")
 
     ret, result = auth.decode_auth_token(token.split(' ')[1])
 
     if not ret: 
-        return create_response(HTTPStatus.BAD_REQUEST, True, result)
+        return create_response(HTTPStatus.BAD_REQUEST, False, result)
 
     user = result
 
     if not user in WHITELISTED_USERS:
-        return create_response(HTTPStatus.BAD_REQUEST, True, "User not allowed")
+        return create_response(HTTPStatus.BAD_REQUEST, False, "User not allowed")
 
     mqtt_publish(f"{topic}/stream", url)
     return create_response(HTTPStatus.OK, True, "OK")
@@ -104,7 +104,7 @@ def volume():
     volume = request.form['volume']
 
     if not volume or not topic:
-        return create_response(HTTPStatus.BAD_REQUEST, True, "Bad parameter")
+        return create_response(HTTPStatus.BAD_REQUEST, False, "Bad parameter")
 
     mqtt_publish(f"{topic}/volume", volume)
     return create_response(HTTPStatus.OK, True, "OK")
