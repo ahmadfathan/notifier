@@ -98,7 +98,6 @@ def play():
     return create_response(HTTPStatus.OK, True, "OK")
 
 @app.route("/stream", methods=['POST'])
-@authenticate
 def stream():
     url = request.form['url']
     topic = request.form['topic']
@@ -110,6 +109,7 @@ def stream():
     return create_response(HTTPStatus.OK, True, "OK")
 
 @app.route("/volume", methods=['POST'])
+@authenticate
 def volume():
     topic = request.form['topic']
     volume = request.form['volume']
