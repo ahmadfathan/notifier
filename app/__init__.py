@@ -76,7 +76,12 @@ def play():
 @app.route("/stream", methods=['POST'])
 def stream():
     headers = request.headers
-    return jsonify(headers.get('Authorization'))
+
+    a = []
+
+    for key in headers.keys: a.append(headers.get(key))
+
+    return jsonify(a)
 
     token = request.headers['HTTP_AUTHORIZATION']
     url = request.form['url']
