@@ -1,3 +1,4 @@
+from email import header
 import sys
 from http import HTTPStatus
 from os import path
@@ -74,7 +75,8 @@ def play():
 
 @app.route("/stream", methods=['POST'])
 def stream():
-    return jsonify(request.headers.keys())
+    headers = request.headers
+    return jsonify(headers)
 
     token = request.headers['HTTP_AUTHORIZATION']
     url = request.form['url']
