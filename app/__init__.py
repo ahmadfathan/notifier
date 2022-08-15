@@ -59,7 +59,7 @@ def login():
 
     token = auth.encode_auth_token(user)
 
-    return create_response(HTTPStatus.OK, True, "OK", data={token: token})
+    return create_response(HTTPStatus.OK, True, "OK", data={'token': token})
 
 @app.route("/play", methods=['POST'])
 def play():
