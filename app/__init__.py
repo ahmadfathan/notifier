@@ -49,8 +49,6 @@ def mqtt_publish(topic, payload):
 
 def authenticate(func):
     def wrapper(*args, **kwargs):
-        resp = func(*args, **kwargs)
-
         token = request.headers['Access-Token']
         
         if not token:
@@ -68,7 +66,7 @@ def authenticate(func):
         if not user in WHITELISTED_USERS:
             return create_response(HTTPStatus.BAD_REQUEST, False, "User not allowed")
             
-        return resp
+        return func(*args, **kwargs)
     
     return wrapper
 
