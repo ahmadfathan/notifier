@@ -54,19 +54,19 @@ def authenticate(func):
         token = request.headers['Access-Token']
         
         if not token:
-            resp = create_response(HTTPStatus.BAD_REQUEST, False, "Bad parameter")
+            return create_response(HTTPStatus.BAD_REQUEST, False, "Bad parameter")
 
         if not len(token.split(' ')) == 2:
-            resp = create_response(HTTPStatus.BAD_REQUEST, False, "Authentication failed")
+            return create_response(HTTPStatus.BAD_REQUEST, False, "Authentication failed")
 
         ret, result = auth.decode_auth_token(token.split(' ')[1])
 
-        if not ret: resp = create_response(HTTPStatus.BAD_REQUEST, False, result)
+        if not ret: return create_response(HTTPStatus.BAD_REQUEST, False, result)
 
         user = result
 
         if not user in WHITELISTED_USERS:
-            resp = create_response(HTTPStatus.BAD_REQUEST, False, "User not allowed")
+            return create_response(HTTPStatus.BAD_REQUEST, False, "User not allowed")
             
         return resp
     
